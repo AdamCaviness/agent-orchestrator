@@ -322,11 +322,6 @@ function extractSummary(
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i];
     if (line?.type === "summary" && line.summary) {
-      // Skip summaries that look like raw JSON (e.g. TypeScript diagnostic arrays)
-      const trimmed = line.summary.trim();
-      if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
-        continue;
-      }
       return { summary: line.summary, isFallback: false };
     }
   }
@@ -342,7 +337,7 @@ function extractSummary(
       const msg = line.message.content
         .replace(/<[a-zA-Z_-]+>[\s\S]*?<\/[a-zA-Z_-]+>/g, "")
         .trim();
-      if (msg.length > 0 && !msg.startsWith("[") && !msg.startsWith("{")) {
+      if (msg.length > 0) {
         return {
           summary: msg.length > 120 ? msg.substring(0, 120) + "..." : msg,
           isFallback: true,
